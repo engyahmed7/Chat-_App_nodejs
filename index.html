@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Socket.io Chat Example</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f3f3f3;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .chat-container {
+            width: 400px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #fff;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column-reverse; 
+        }
+
+        .message-list {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+            overflow-y: auto;
+            max-height: 300px;
+            padding: 10px;
+            padding-bottom: 0;
+        }
+
+        .message {
+            background-color: #f9f9f9;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+            position: relative;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .message input {
+            width: calc(100% - 70px);
+            margin-right: 10px;
+            border: 1px solid #ccc;
+            padding: 8px;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+
+        .message button {
+            width: 60px;
+            padding: 8px;
+            background-color: #007bff;
+            border: none;
+            color: #fff;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 5px;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        .margin{
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="chat-container">
+    <ul class="message-list" id="messages"></ul>
+    <form id="form" action="" class="message">
+        <input id="input" autocomplete="off" placeholder="Type your message..." />
+        <button>Send</button>
+    </form>
+</div>
+<script src="/socket.io/socket.io.js"></script>
+<script>
+    var username = prompt("Please enter your name:");
+
+    var socket = io();
+
+    var form = document.getElementById('form');
+    var input = document.getElementById('input');
+
+    form.addEventListener('submit', function(e) {
+        e.preventDefault();
+        if (input.value.trim() !== '') {
+            socket.emit('chat message', { username: username, message: input.value });
+            input.value = '';
+        }
+    });
+
+    socket.on('chat message', function(data) {
+        var item = document.createElement('li');
+        item.classList.add('margin');
+        item.innerHTML = '<strong>' + data.username + ':</strong> ' + data.message;
+        document.getElementById('messages').appendChild(item);
+    });
+</script>
+</body>
+</html>
