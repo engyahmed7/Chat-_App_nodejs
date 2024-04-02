@@ -7,6 +7,8 @@ const app = express();
 const server = http.createServer(app);
 const io = socketIo(server);
 
+const PORT  = process.env.PORT || 7000;
+
 app.use(express.static(__dirname + '/public'));
 
 io.on('connection', (socket) => {
@@ -25,6 +27,6 @@ app.get('/', (req, res) => {
     res.sendFile(__dirname + '/index.html');
 });
 
-server.listen(7000, () => {
+server.listen(PORT , () => {
   console.log('http://localhost:7000');
 });
